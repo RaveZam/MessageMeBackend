@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const UserRoute = require("./Routes/user.route");
+const ChatRoute = require("./Routes/chat.route");
 // const User = require("./models/user.model");
 
 const app = express();
@@ -16,10 +17,7 @@ app.use(express.json()); // This makes it JSON supportive
 app.use(express.urlencoded({ extended: false })); // This makes it Form Supportive
 
 app.use("/api/users", UserRoute);
-
-app.get("/", (req, res) => {
-  res.send("Push From NodeJS");
-});
+app.use("/api/chat", ChatRoute);
 
 mongoose
   .connect(

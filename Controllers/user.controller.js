@@ -3,12 +3,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const AddUser = async (req, res) => {
-  // try {
-  //   const user = await User.create(req.body);
-  //   res.status(200).json(user);
-  // } catch (error) {
-  //   res.status(500).json({ message: error.message });
-  // }
   const { username, email, password } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -38,9 +32,13 @@ const Login = async (req, res) => {
       return res.status(400).json({ message: "Invalid Password" });
     }
 
-    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { id: user._id, email: user.email, username: user.username },
+      JWT_SECRET,
+      {
+        expiresIn: "1h",
+      }
+    );
     res.status(200).json({ status: 200, message: "Login Successful", token });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error ", error });
