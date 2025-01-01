@@ -3,18 +3,32 @@ const Chat = require("../models/chat.model");
 
 const getChatRooms = async (req, res) => {
   const { id } = req.body;
-
   try {
     const chatRooms = await Chat.find({
       participants: id,
     });
 
-    if (!chatRooms.length) {
-      res.status(404).json({ message: "No Rooms Found!" });
-    }
-    console.log(chatRooms);
+    const chatRoomName = await Promise.all(
+      chatRooms.map(async (room) => {
+        const otherParticipantId = room.participants.find(
+          (participantid) => participantid != id
+        );
+
+        const otherParticipant = await User.findById(otherParticipantId).select(
+          "username"
+        );
+
+        return {
+          ...room.toObject(),
+          otherParticipantName: otherParticipant
+            ? otherParticipant.username
+            : "Unknown",
+        };
+      })
+    );
+
     res.status(200).json({
-      chatRooms,
+      chatRoomName,
       message: "Chatrooms found successfully!",
     });
   } catch (error) {
