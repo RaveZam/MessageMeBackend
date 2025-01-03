@@ -16,6 +16,15 @@ const AddUser = async (req, res) => {
   }
 };
 
+const getUsers = async (req, res) => {
+  try {
+    const users = await User.find({});
+    res.status(200).json({ users });
+  } catch (error) {
+    res.status(500).json({ message: "Error Fetching Users" });
+  }
+};
+
 const JWT_SECRET = "thisisasecret";
 
 const Login = async (req, res) => {
@@ -45,4 +54,4 @@ const Login = async (req, res) => {
   }
 };
 
-module.exports = { AddUser, Login };
+module.exports = { AddUser, Login, getUsers };
