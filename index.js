@@ -2,12 +2,18 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const http = require("http");
+const { Server } = require("socket.io");
 
 const UserRoute = require("./Routes/user.route");
 const ChatRoute = require("./Routes/chat.route");
+const ChatController = require("./Controllers/chat.controller");
 // const User = require("./models/user.model");
+// const Chat = require("./models/chat.model");
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: "*" } });
 
 //Middle Ware
 
@@ -15,6 +21,20 @@ app.use(bodyParser.json()); // Parse JSON payloads
 app.use(cors());
 app.use(express.json()); // This makes it JSON supportive
 app.use(express.urlencoded({ extended: false })); // This makes it Form Supportive
+
+io.on("connection", (socket) => {
+  console.log("A User Connected " + socket.id);
+
+  socket.emit("welcome", { message: "Welcome To SocketIO" });
+
+  socket.on("disconnect", () => {
+    console.log("User" + socket.id + "has disconnected");
+  });
+});
+
+server.listen(3001, () => {
+  console.log("listenint to 3001");
+});
 
 app.use("/api/users", UserRoute);
 app.use("/api/chat", ChatRoute);
@@ -32,7 +52,7 @@ mongoose
     console.log("Failed To Connect To Database");
   });
 
-//Clear Users
+// Clear Users
 // (async () => {
 //   try {
 //     await mongoose.connect(
@@ -44,7 +64,7 @@ mongoose
 //     );
 
 //     // Delete all users
-//     await User.deleteMany({});
+//     await Chat.deleteMany({});
 //     console.log("All users deleted successfully");
 
 //     mongoose.connection.close();
