@@ -18,11 +18,14 @@ const getChatRooms = async (req, res) => {
           "username"
         );
 
+        // const SessionUser = await User.findById(id).select("username");
+
         return {
           ...room.toObject(),
           otherParticipantName: otherParticipant
             ? otherParticipant.username
             : "Unknown",
+          // SessionUser: SessionUser ? SessionUser.username : "Unknown",
         };
       })
     );

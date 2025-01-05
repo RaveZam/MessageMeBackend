@@ -7,6 +7,7 @@ const chatSchema = mongoose.Schema({
   ],
   messages: [
     {
+      // _id: mongoose.Schema.Types.ObjectId,
       message: { type: String, required: true },
       sentBy: {
         type: mongoose.Schema.Types.ObjectId,

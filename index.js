@@ -27,6 +27,19 @@ io.on("connection", (socket) => {
 
   socket.emit("welcome", { message: "Welcome To SocketIO" });
 
+  socket.on("joinRoom", (roomId) => {
+    console.log(`${socket.id} is joining on ${roomId}`);
+    socket.join(roomId);
+    socket.emit("joinedRoom", { roomId, message: "You joined The room" });
+  });
+
+  socket.on("sendMessage", ({ roomId, message }) => {
+    console.log(
+      `Message for room ${roomId}: ${message.message} sent by ${message.sentBy}`
+    );
+    socket.to(roomId).emit("receiveMessage", { message });
+  });
+
   socket.on("disconnect", () => {
     console.log("User" + socket.id + "has disconnected");
   });
